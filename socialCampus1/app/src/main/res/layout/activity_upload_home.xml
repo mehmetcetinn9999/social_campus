@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- İlk Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#87CEEB"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:elevation="4dp">
+
+        <!-- Sol Menü Butonu -->
+        <ImageButton
+            android:id="@+id/menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Menu"
+            android:layout_gravity="start|center_vertical"
+            android:padding="8dp" />
+
+        <!-- Ortadaki Başlık -->
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Social Campus"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"
+            android:layout_gravity="center|center_vertical"
+            android:layout_marginStart="16dp" />
+
+        <!-- Sağdaki Upload Butonu -->
+        <ImageButton
+            android:id="@+id/upload_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/upload_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Upload"
+            android:layout_gravity="end|center_vertical"
+            android:padding="8dp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+        <!-- LinearLayout Başlangıcı -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/toolbar"
+            android:padding="16dp">
+
+            <!-- Başlık -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Post"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"/>
+
+            <!-- Paragraf -->
+            <EditText
+                android:id="@+id/editTextPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="A paragraph of text where you can provide details or instructions."
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"/>
+
+            <!-- Resim Yükleme Butonu -->
+            <ImageView
+                android:id="@+id/upload_image"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:src="@drawable/baseline_camera_alt_24"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:contentDescription="Upload Image"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="openGallery"/>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:elevation="4dp"
+            android:layout_alignParentBottom="true">
+
+
+            <ImageButton
+                android:id="@+id/eventButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_event_available_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_gravity="start|center_vertical"
+                android:contentDescription="Hamburger"
+                android:padding="8dp" />
+
+
+            <ImageButton
+                android:id="@+id/homeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_home_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Home"
+                android:layout_gravity="center|center_vertical"
+                android:padding="8dp" />
+
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_people_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="settings"
+                android:layout_gravity="end|center_vertical"
+                android:padding="8dp" />
+
+        </androidx.appcompat.widget.Toolbar>
+    </RelativeLayout>
+
+
