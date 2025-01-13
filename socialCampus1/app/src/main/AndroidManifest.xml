@@ -16,6 +16,9 @@
             android:name=".EventActivity"
             android:exported="false" />
         <activity
+            android:name=".ActivitySignUp"
+            android:exported="false" />
+        <activity
             android:name=".UploadHomeActivity"
             android:exported="false" />
         <activity

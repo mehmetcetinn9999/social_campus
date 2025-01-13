@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "402095252142",
+    "project_id": "socialcampus-20d97",
+    "storage_bucket": "socialcampus-20d97.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402095252142:android:6f380cab97da71dbe6033f",
+        "android_client_info": {
+          "package_name": "com.example.t1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpBEvG9DAAdpFsj5-P-bdvzOccqXf02Rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
