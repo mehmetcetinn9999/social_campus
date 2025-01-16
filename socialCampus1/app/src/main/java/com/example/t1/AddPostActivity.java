@@ -16,8 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class AddPostActivity extends AppCompatActivity {
 
@@ -27,6 +31,7 @@ public class AddPostActivity extends AppCompatActivity {
     private Uri imageUri;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
+    private StorageReference storageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+        storageRef = FirebaseStorage.getInstance().getReference();
 
         editPostContent = findViewById(R.id.editPostContent);
         previewPhoto = findViewById(R.id.previewPhoto);
@@ -47,48 +53,69 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
         btnSharePost.setOnClickListener(v -> {
-            // EditText'teki paylaşım içeriğini al
             String postContent = editPostContent.getText().toString().trim();
-
-            // Kullanıcının UID'sini al
             String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
 
-            // Eğer oturum açık değilse, hata mesajı göster
             if (userId == null) {
                 System.out.println("Kullanıcı oturumu açık değil!");
                 return;
             }
 
-            // Firestore'dan kullanıcı adını çek
+            // Kullanıcı adını Firestore'dan al
             db.collection("users").document(userId).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             String username = documentSnapshot.getString("username");
 
-                            // Kullanıcı adı kontrolü
                             if (username != null && !username.isEmpty()) {
-                                // Intent ile paylaşılacak veriler
-                                Intent resultIntent = new Intent();
-                                resultIntent.putExtra("postContent", postContent);
-                                resultIntent.putExtra("username", username);
-                                resultIntent.putExtra("imageUri", imageUri != null ? imageUri.toString() : null);
-
-                                // Sonuç set ve aktiviteyi kapat
-                                setResult(RESULT_OK, resultIntent);
-                                finish();
+                                if (imageUri != null) {
+                                    // Görsel varsa yükle ve post kaydet
+                                    uploadImageAndSavePost(username, postContent);
+                                } else {
+                                    // Görsel yoksa sadece post kaydet
+                                    savePostToFirestore(username, postContent, null);
+                                }
                             } else {
-                                System.out.println("Kullanıcı adı Firestore'dan alınamadı.");
+                                System.out.println("Kullanıcı adı bulunamadı.");
                             }
                         } else {
-                            System.out.println("Firestore dökümanı bulunamadı!");
+                            System.out.println("Kullanıcı dökümanı mevcut değil.");
                         }
                     })
                     .addOnFailureListener(e -> {
                         System.out.println("Firestore sorgusu başarısız oldu: " + e.getMessage());
-                        e.printStackTrace();
                     });
         });
+    }
 
+    private void uploadImageAndSavePost(String username, String content) {
+        String fileName = UUID.randomUUID().toString();
+        StorageReference fileRef = storageRef.child("post_images/" + fileName);
+
+        fileRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
+            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                savePostToFirestore(username, content, uri.toString());
+            }).addOnFailureListener(e -> {
+                System.out.println("Görsel URL'si alınamadı: " + e.getMessage());
+            });
+        }).addOnFailureListener(e -> {
+            System.out.println("Görsel yükleme başarısız: " + e.getMessage());
+        });
+    }
+
+    private void savePostToFirestore(String username, String content, String imageUrl) {
+        HashMap<String, Object> post = new HashMap<>();
+        post.put("username", username);
+        post.put("content", content);
+        post.put("imageUri", imageUrl);
+        post.put("timestamp", System.currentTimeMillis());
+
+        db.collection("posts").add(post).addOnSuccessListener(documentReference -> {
+            System.out.println("Post başarıyla kaydedildi!");
+            finish();
+        }).addOnFailureListener(e -> {
+            System.out.println("Post kaydedilemedi: " + e.getMessage());
+        });
     }
 
     @Override

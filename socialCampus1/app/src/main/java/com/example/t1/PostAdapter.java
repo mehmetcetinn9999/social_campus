@@ -1,15 +1,20 @@
 package com.example.t1;
 
-import android.net.Uri;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+
+
+import java.util.Date;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
@@ -32,11 +37,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postList.get(position);
         holder.usernameTextView.setText(post.getUsername());
         holder.contentTextView.setText(post.getContent());
-        holder.timestampTextView.setText(post.getTimestamp());
 
-        if (post.getImageUri() != null) {
+        String formattedTimestamp = formatTimestamp(post.getTimestamp());
+        holder.timestampTextView.setText(formattedTimestamp);
+
+        if (post.getImageUri() != null && !post.getImageUri().isEmpty()) {
             holder.imageView.setVisibility(View.VISIBLE);
-            holder.imageView.setImageURI(Uri.parse(post.getImageUri()));
+
+            // Glide ile resim yükleme
+            Glide.with(holder.itemView.getContext())
+                    .load(post.getImageUri())
+                    .into(holder.imageView);
         } else {
             holder.imageView.setVisibility(View.GONE);
         }
@@ -49,7 +60,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             args.putString("username", post.getUsername());
             fragment.setArguments(args);
             fragment.show(activity.getSupportFragmentManager(), "postDetail");
-
         });
 
     }
@@ -57,6 +67,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public int getItemCount() {
         return postList.size();
+    }
+
+    private String formatTimestamp(String timestamp) {
+        try {
+            long timeInMillis = Long.parseLong(timestamp); // Milisaniyeyi long olarak al
+            Date date = new Date(timeInMillis); // Zamanı Date nesnesine çevir
+
+            // Tarih formatını belirle: Örneğin, "14 Ocak 2025, 15:30"
+            return DateFormat.format("dd MMM yyyy, HH:mm", date).toString();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return ""; // Hata durumunda boş döndür
+        }
     }
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
@@ -72,4 +95,3 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
     }
 }
-

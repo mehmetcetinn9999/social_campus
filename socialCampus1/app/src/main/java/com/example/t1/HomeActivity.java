@@ -14,6 +14,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +89,33 @@ public class HomeActivity extends AppCompatActivity {
 
         postAdapter = new PostAdapter(postList);
         recyclerViewPosts.setAdapter(postAdapter);
+
+        loadPostsFromFirestore();
+    }
+
+    private void loadPostsFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("posts")
+                .orderBy("timestamp") // Zaman damgasına göre sırala
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    postList.clear(); // Eski verileri temizle
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        queryDocumentSnapshots.forEach(documentSnapshot -> {
+                            String username = documentSnapshot.getString("username");
+                            String content = documentSnapshot.getString("content");
+                            String imageUri = documentSnapshot.getString("imageUri");
+                            long timestamp = documentSnapshot.getLong("timestamp");
+
+                                // Listeye post ekle
+                            postList.add(0, new Post(username, content, String.valueOf(timestamp), imageUri));
+                        });
+                        postAdapter.notifyDataSetChanged(); // Listeyi güncelle
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("Postları yüklerken hata oluştu: " + e.getMessage());
+                });
     }
 
     @Override
