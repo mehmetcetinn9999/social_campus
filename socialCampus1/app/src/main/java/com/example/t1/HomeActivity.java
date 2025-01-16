@@ -11,58 +11,62 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import android.widget.Button; // Button için import
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class HomeActivity extends AppCompatActivity {
 
     private LinearLayout postsContainer;
-    private SearchView searchView;
-    private ImageButton uploadButton1; // Upload Button
+    private ImageButton eventButton, clubButton, uploadButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Butonları ve layout'u bağlama
+        eventButton = findViewById(R.id.eventButton);
+        clubButton = findViewById(R.id.clubButton);
+        uploadButton = findViewById(R.id.upload_button);
         postsContainer = findViewById(R.id.postsContainer);
-        searchView = findViewById(R.id.search_view);
-        uploadButton1 = findViewById(R.id.upload_button);
 
+        // Varsayılan Fragment (Event Listesi)
+        if (savedInstanceState == null) {
+            openFragment(new EventsListFragment());
+        }
 
-        uploadButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, UploadHomeActivity.class);
-                startActivity(intent);
-            }
+        // Event Butonu Tıklama
+        eventButton.setOnClickListener(v -> openFragment(new EventsListFragment()));
+
+        // Club Butonu Tıklama
+        clubButton.setOnClickListener(v -> openFragment(new ClubsListFragment()));
+
+        // Upload Butonu İşlevi
+        uploadButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, UploadHomeActivity.class);
+            startActivity(intent);
         });
 
-
+        // Intent'ten gelen verilerle gönderi ekleme
         String postText = getIntent().getStringExtra("post_text");
         String imageUriString = getIntent().getStringExtra("image_uri");
-
 
         if (postText != null) {
             addPost(postText, imageUriString);
         }
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                filterPosts(newText);
-                return true;
-            }
-        });
     }
 
+    // Yeni Fragment Açma
+    private void openFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
+    // Gönderi Ekleme
     private void addPost(String text, String imageUriString) {
         View postView = LayoutInflater.from(this).inflate(R.layout.item_post, null);
 
@@ -74,25 +78,12 @@ public class HomeActivity extends AppCompatActivity {
         if (imageUriString != null) {
             Uri imageUri = Uri.parse(imageUriString);
             postImageView.setImageURI(imageUri);
+
+            // Dinamik boyutlandırma
+            postImageView.getLayoutParams().height = 200;
+            postImageView.requestLayout();
         }
 
         postsContainer.addView(postView);
     }
-
-
-    private void filterPosts(String query) {
-        for (int i = 0; i < postsContainer.getChildCount(); i++) {
-            View postView = postsContainer.getChildAt(i);
-            TextView postTextView = postView.findViewById(R.id.post_text);
-            String postText = postTextView.getText().toString();
-
-            if (postText.toLowerCase().contains(query.toLowerCase())) {
-                postView.setVisibility(View.VISIBLE);
-            } else {
-                postView.setVisibility(View.GONE);
-            }
-        }
-    }
 }
-
-

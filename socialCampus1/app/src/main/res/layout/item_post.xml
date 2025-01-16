@@ -1,20 +1,29 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="16dp"
+    tools:ignore="ExtraText">
 
+    <!-- Gönderi Metni -->
     <TextView
         android:id="@+id/post_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Post Text"
         android:textSize="16sp"
-        android:textColor="#000000" />
+        android:layout_marginBottom="8dp" />
 
+    <!-- Gönderi Resmi -->
     <ImageView
         android:id="@+id/post_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone" />
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/darker_gray"/> <!-- Sabit Yükseklik -->
 </LinearLayout>
+
