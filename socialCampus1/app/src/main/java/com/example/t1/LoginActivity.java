@@ -7,13 +7,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ActivityLogin extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText;
     private Button loginButton, signUpButton;
@@ -22,7 +21,7 @@ public class ActivityLogin extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.login_activity);
 
         // Firebase Auth instance
         mAuth = FirebaseAuth.getInstance();
@@ -39,12 +38,12 @@ public class ActivityLogin extends AppCompatActivity {
             String password = passwordEditText.getText().toString().trim();
 
             if (TextUtils.isEmpty(email)) {
-                Toast.makeText(ActivityLogin.this, "Lütfen e-posta adresinizi girin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Lütfen e-posta adresinizi girin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (TextUtils.isEmpty(password)) {
-                Toast.makeText(ActivityLogin.this, "Lütfen şifrenizi girin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Lütfen şifrenizi girin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -54,20 +53,20 @@ public class ActivityLogin extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Giriş başarılı, HomeActivity'ye yönlendir
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(ActivityLogin.this, "Hoş geldiniz, " + (user != null ? user.getEmail() : "Kullanıcı"), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(ActivityLogin.this, HomeActivity.class);
+                            Toast.makeText(LoginActivity.this, "Hoş geldiniz, " + (user != null ? user.getEmail() : "Kullanıcı"), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
                             // Giriş başarısız
-                            Toast.makeText(ActivityLogin.this, "Giriş başarısız: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Giriş başarısız: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         });
 
         // Kayıt olma butonuna tıklama
         signUpButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ActivityLogin.this, ActivitySignUp.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
     }

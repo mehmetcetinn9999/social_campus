@@ -17,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivitySignUp extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText, nameEditText, surnameEditText, usernameEditText, departmentEditText;
     private Button signUpButton;
     private FirebaseAuth mAuth;
@@ -27,7 +27,7 @@ public class ActivitySignUp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.register_activity);
 
         // Firebase Auth instance
         mAuth = FirebaseAuth.getInstance();
@@ -57,12 +57,12 @@ public class ActivitySignUp extends AppCompatActivity {
 
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name) ||
                     TextUtils.isEmpty(surname) || TextUtils.isEmpty(username) || TextUtils.isEmpty(department)) {
-                Toast.makeText(ActivitySignUp.this, "Lütfen tüm alanları doldurun", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Lütfen tüm alanları doldurun", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (password.length() < 6) {
-                Toast.makeText(ActivitySignUp.this, "Şifre en az 6 karakter olmalı", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Şifre en az 6 karakter olmalı", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -77,7 +77,7 @@ public class ActivitySignUp extends AppCompatActivity {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             // Kullanıcı adı zaten kullanılıyor
                             progressDialog.dismiss();
-                            Toast.makeText(ActivitySignUp.this, "Bu kullanıcı adı zaten alınmış!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Bu kullanıcı adı zaten alınmış!", Toast.LENGTH_SHORT).show();
                         } else {
                             // Kullanıcı adı benzersiz, Firebase Authentication ile kullanıcı oluşturma
                             mAuth.createUserWithEmailAndPassword(email, password)
@@ -98,27 +98,27 @@ public class ActivitySignUp extends AppCompatActivity {
                                                         .set(userData)
                                                         .addOnSuccessListener(aVoid -> {
                                                             progressDialog.dismiss();
-                                                            Toast.makeText(ActivitySignUp.this, "Kayıt başarılı!", Toast.LENGTH_SHORT).show();
-                                                            // ActivityLogin'e yönlendirme
-                                                            Intent intent = new Intent(ActivitySignUp.this, ActivityLogin.class);
+                                                            Toast.makeText(RegisterActivity.this, "Kayıt başarılı!", Toast.LENGTH_SHORT).show();
+                                                            // LoginActivity'e yönlendirme
+                                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                                             startActivity(intent);
                                                             finish(); // Bu aktiviteyi kapat
                                                         })
                                                         .addOnFailureListener(e -> {
                                                             progressDialog.dismiss();
-                                                            Toast.makeText(ActivitySignUp.this, "Veri kaydedilirken hata oluştu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(RegisterActivity.this, "Veri kaydedilirken hata oluştu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                         });
                                             }
                                         } else {
                                             progressDialog.dismiss();
-                                            Toast.makeText(ActivitySignUp.this, "Kayıt başarısız: " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(RegisterActivity.this, "Kayıt başarısız: " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
                         }
                     })
                     .addOnFailureListener(e -> {
                         progressDialog.dismiss();
-                        Toast.makeText(ActivitySignUp.this, "Kullanıcı adı kontrol edilirken hata oluştu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Kullanıcı adı kontrol edilirken hata oluştu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
     }
