@@ -84,8 +84,6 @@ public class HomeActivity extends AppCompatActivity {
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(this));
 
         postList = new ArrayList<>();
-        postList.add(new Post("User1", "This is a sample post content", "10:00 AM",null));
-        postList.add(new Post("User2", "Another sample post", "10:30 AM", null));
 
         postAdapter = new PostAdapter(postList);
         recyclerViewPosts.setAdapter(postAdapter);
@@ -97,9 +95,10 @@ public class HomeActivity extends AppCompatActivity {
         if (requestCode == ADD_POST_REQUEST && resultCode == RESULT_OK && data != null) {
             String postContent = data.getStringExtra("postContent");
             String imageUri = data.getStringExtra("imageUri");
+            String username = data.getStringExtra("username");
 
             // Yeni post ekle
-            postList.add(0, new Post("CurrentUser", postContent, "Now", imageUri));
+            postList.add(0, new Post(username, postContent, "Now", imageUri));
             postAdapter.notifyItemInserted(0);
         }
     }
