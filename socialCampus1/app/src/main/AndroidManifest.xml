@@ -25,6 +25,11 @@
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".HomeActivity"></activity>
         <activity android:name=".AddPostActivity"></activity>
+        <activity android:name=".EventActivity"></activity>
+        <activity android:name=".AddEventActivity"></activity>
+        <activity android:name=".ClubActivity"></activity>
+        <activity android:name=".AddClubActivity"></activity>
+
 
 
     </application>

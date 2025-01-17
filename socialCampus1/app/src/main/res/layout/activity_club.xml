@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".ClubActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -23,23 +23,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:title="Anasayfa">
+                android:title="Klüpler">
 
-                <!-- Sağ Üst Köşe Buton -->
                 <ImageButton
-                    android:id="@+id/btn_add_post"
+                    android:id="@+id/btn_add_club"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:background="@null"
                     android:src="@drawable/ic_add"
                     android:layout_gravity="end"
-                    android:contentDescription="Add Post"
+                    android:contentDescription="Add Club"
                     android:padding="8dp" />
+
             </androidx.appcompat.widget.Toolbar>
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewPosts"
+            android:id="@+id/recyclerViewClubs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editEventContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Etkinlik İçeriği"
+            android:inputType="textMultiLine"
+            android:minHeight="100dp"
+            android:gravity="top" />
+
+        <EditText
+            android:id="@+id/editEventDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Etkinlik Tarihi (örn: 19.02.2025)"
+            android:inputType="date"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/editEventPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Etkinlik Ücreti"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
+
+        <ImageView
+            android:id="@+id/previewEventPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btnAddPhoto"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_add_photo"
+            android:background="@null"
+            android:contentDescription="Fotoğraf Ekle" />
+
+        <Button
+            android:id="@+id/btnShareEvent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Etkinliği Paylaş" />
+
+    </LinearLayout>
+</ScrollView>

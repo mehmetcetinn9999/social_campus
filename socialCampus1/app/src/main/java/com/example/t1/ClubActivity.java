@@ -21,32 +21,29 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
-
-    private static final int ADD_POST_REQUEST = 1;
+public class ClubActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private RecyclerView recyclerViewPosts;
-    private PostAdapter postAdapter;
-    private List<Post> postList;
+    private RecyclerView recyclerViewClubs;
+    private ClubAdapter clubAdapter;
+    private List<Club> clubList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity);
+        setContentView(R.layout.activity_club);
 
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // "+" Butonu Ayarları
-        ImageButton addPostButton = findViewById(R.id.btn_add_post);
-        addPostButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton addClubButton = findViewById(R.id.btn_add_club);
+        addClubButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, AddPostActivity.class);
-                startActivityForResult(intent, ADD_POST_REQUEST);
+                Intent intent = new Intent(ClubActivity.this, AddClubActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -67,14 +64,14 @@ public class HomeActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.menu_home) {
-                    Toast.makeText(HomeActivity.this, "Anasayfa seçildi", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(ClubActivity.this, HomeActivity.class));
                 } else if (id == R.id.menu_profile) {
-                    Toast.makeText(HomeActivity.this, "Profil seçildi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ClubActivity.this, "Profil seçildi", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.menu_logout) {
-                    Toast.makeText(HomeActivity.this, "Çıkış yapılıyor...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ClubActivity.this, "Çıkış yapılıyor...", Toast.LENGTH_SHORT).show();
                     finish(); // Çıkış için aktiviteyi kapat
                 } else {
-                    Toast.makeText(HomeActivity.this, "Bilinmeyen seçim", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ClubActivity.this, "Bilinmeyen seçim", Toast.LENGTH_SHORT).show();
                 }
 
                 // Navigation Drawer'ı kapat
@@ -84,28 +81,28 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // RecyclerView Ayarları
-        recyclerViewPosts = findViewById(R.id.recyclerViewPosts);
-        recyclerViewPosts.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewClubs = findViewById(R.id.recyclerViewClubs);
+        recyclerViewClubs.setLayoutManager(new LinearLayoutManager(this));
 
-        postList = new ArrayList<>();
+        clubList = new ArrayList<>();
 
-        postAdapter = new PostAdapter(postList);
-        recyclerViewPosts.setAdapter(postAdapter);
+        clubAdapter = new ClubAdapter(clubList);
+        recyclerViewClubs.setAdapter(clubAdapter);
 
-        loadPostsFromFirestore();
+        loadClubsFromFirestore();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_event) {
-                startActivity(new Intent(HomeActivity.this, EventActivity.class));
+                startActivity(new Intent(ClubActivity.this, EventActivity.class));
                 return true;
             } else if (itemId == R.id.nav_home) {
-                // Zaten HomeActivity'deyiz, bir şey yapmaya gerek yok
+                startActivity(new Intent(ClubActivity.this, HomeActivity.class));
                 return true;
             } else if (itemId == R.id.nav_club) {
-                startActivity(new Intent(HomeActivity.this, ClubActivity.class));
+                // Zaten ClubActivity'deyiz, bir şey yapmaya gerek yok
                 return true;
             }
 
@@ -113,42 +110,27 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void loadPostsFromFirestore() {
+    private void loadClubsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("posts")
-                .orderBy("timestamp") // Zaman damgasına göre sırala
+        db.collection("clubs")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    postList.clear(); // Eski verileri temizle
+                    clubList.clear();
                     if (!queryDocumentSnapshots.isEmpty()) {
                         queryDocumentSnapshots.forEach(documentSnapshot -> {
                             String username = documentSnapshot.getString("username");
+                            String clubName = documentSnapshot.getString("clubName");
                             String content = documentSnapshot.getString("content");
                             String imageUri = documentSnapshot.getString("imageUri");
-                            long timestamp = documentSnapshot.getLong("timestamp");
+                            Long timestamp = documentSnapshot.getLong("timestamp");
 
-                                // Listeye post ekle
-                            postList.add(0, new Post(username, content, String.valueOf(timestamp), imageUri));
+                            clubList.add(new Club(username, clubName, content, imageUri, timestamp));
                         });
-                        postAdapter.notifyDataSetChanged(); // Listeyi güncelle
+                        clubAdapter.notifyDataSetChanged();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    System.out.println("Postları yüklerken hata oluştu: " + e.getMessage());
+                    System.out.println("Kulüpleri yüklerken hata oluştu: " + e.getMessage());
                 });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_POST_REQUEST && resultCode == RESULT_OK && data != null) {
-            String postContent = data.getStringExtra("postContent");
-            String imageUri = data.getStringExtra("imageUri");
-            String username = data.getStringExtra("username");
-
-            // Yeni post ekle
-            postList.add(0, new Post(username, postContent, "Now", imageUri));
-            postAdapter.notifyItemInserted(0);
-        }
     }
 }

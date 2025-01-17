@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".EventActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -23,23 +23,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:title="Anasayfa">
+                android:title="Etkinlikler">
 
-                <!-- Sağ Üst Köşe Buton -->
                 <ImageButton
-                    android:id="@+id/btn_add_post"
+                    android:id="@+id/btn_add_event"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:layout_gravity="end"
                     android:background="@null"
                     android:src="@drawable/ic_add"
-                    android:layout_gravity="end"
-                    android:contentDescription="Add Post"
+                    android:contentDescription="Etkinlik Ekle"
                     android:padding="8dp" />
+
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewPosts"
+            android:id="@+id/recyclerViewEvents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -60,4 +60,5 @@
         android:layout_gravity="start"
         app:menu="@menu/navigation_menu"
         app:headerLayout="@layout/navigation_header" />
+
 </androidx.drawerlayout.widget.DrawerLayout>
