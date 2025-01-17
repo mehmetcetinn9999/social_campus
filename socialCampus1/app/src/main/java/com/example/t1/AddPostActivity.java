@@ -36,6 +36,7 @@ public class AddPostActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private StorageReference storageRef;
+    //Thread
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
@@ -66,7 +67,7 @@ public class AddPostActivity extends AppCompatActivity {
 
             if (userId == null) {
                 progressBar.setVisibility(View.GONE);
-                System.out.println("Kullanıcı oturumu açık değil!");
+                System.out.println("Kullanıcı oturumu açık değil");
                 return;
             }
 
@@ -92,7 +93,7 @@ public class AddPostActivity extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> {
                         progressBar.setVisibility(View.GONE);
-                        System.out.println("Firestore sorgusu başarısız oldu: " + e.getMessage());
+                        System.out.println("Firestore sorgusu hatalı: " + e.getMessage());
                     });
         });
     }
@@ -138,7 +139,7 @@ public class AddPostActivity extends AppCompatActivity {
             db.collection("posts").add(post).addOnSuccessListener(documentReference -> {
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
-                    System.out.println("Post başarıyla kaydedildi!");
+                    System.out.println("Post kaydedildi");
                     finish();
                 });
             }).addOnFailureListener(e -> {

@@ -43,7 +43,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         if (post.getImageUri() != null && !post.getImageUri().isEmpty()) {
             holder.imageView.setVisibility(View.VISIBLE);
 
-            // Glide ile resim yükleme
+            // Glide (resim yükleme)
             Glide.with(holder.itemView.getContext())
                     .load(post.getImageUri())
                     .into(holder.imageView);
@@ -51,6 +51,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.imageView.setVisibility(View.GONE);
         }
 
+        //Post paylaşan detay fragmenti
         holder.itemView.setOnClickListener(v -> {
             AppCompatActivity activity = (AppCompatActivity) v.getContext();
             PostDetailFragment fragment = new PostDetailFragment();
@@ -68,16 +69,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return postList.size();
     }
 
+    //firebase den gelen long formatındaki zamanı tarihe çevir
     private String formatTimestamp(String timestamp) {
         try {
-            long timeInMillis = Long.parseLong(timestamp); // Milisaniyeyi long olarak al
-            Date date = new Date(timeInMillis); // Zamanı Date nesnesine çevir
+            long timeInMillis = Long.parseLong(timestamp);
+            Date date = new Date(timeInMillis);
 
-            // Tarih formatını belirle: Örneğin, "14 Ocak 2025, 15:30"
             return DateFormat.format("dd MMM yyyy, HH:mm", date).toString();
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return ""; // Hata durumunda boş döndür
+            return "";
         }
     }
 

@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // "+" Butonu Ayarları
+        // "Share" Butonu
         ImageButton addPostButton = findViewById(R.id.btn_add_post);
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,17 +50,17 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        // DrawerLayout ve NavigationView
+        // DrawerLayout ve NavigationView (Kaymalı Yan Menü)
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
-        // Navigation Drawer Açma/Kapama
+        // Yan Menü Açma/Kapama
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Navigation Menü Tıklamaları
+        // Menü Butonları
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -117,10 +117,10 @@ public class HomeActivity extends AppCompatActivity {
     private void loadPostsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("posts")
-                .orderBy("timestamp") // Zaman damgasına göre sırala
+                .orderBy("timestamp") // Zamana göre sırala
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    postList.clear(); // Eski verileri temizle
+                    postList.clear(); //eski postu bellekten siler
                     if (!queryDocumentSnapshots.isEmpty()) {
                         queryDocumentSnapshots.forEach(documentSnapshot -> {
                             String username = documentSnapshot.getString("username");
@@ -143,13 +143,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_POST_REQUEST && resultCode == RESULT_OK && data != null) {
-            String postContent = data.getStringExtra("postContent");
-            String imageUri = data.getStringExtra("imageUri");
-            String username = data.getStringExtra("username");
-
-            // Yeni post ekle
-            postList.add(0, new Post(username, postContent, "Now", imageUri));
-            postAdapter.notifyItemInserted(0);
+            loadPostsFromFirestore();
         }
     }
 }

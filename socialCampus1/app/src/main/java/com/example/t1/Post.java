@@ -33,4 +33,10 @@ public class Post {
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
     }
+
+
+    //UNİT TEST
+    public boolean isValid() {
+        return username != null && !username.isEmpty();
+    }
 }

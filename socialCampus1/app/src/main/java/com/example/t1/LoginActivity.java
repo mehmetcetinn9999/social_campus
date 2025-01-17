@@ -23,16 +23,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        // Firebase Auth instance
         mAuth = FirebaseAuth.getInstance();
 
-        // UI bileşenleri
         emailEditText = findViewById(R.id.editTextEmail);
         passwordEditText = findViewById(R.id.editTextPassword);
         loginButton = findViewById(R.id.Login);
         signUpButton = findViewById(R.id.SignUp);
 
-        // Giriş butonuna tıklama
+        // Giriş butonuna
         loginButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
