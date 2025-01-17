@@ -66,7 +66,8 @@ public class ClubActivity extends AppCompatActivity {
                 if (id == R.id.menu_home) {
                     startActivity(new Intent(ClubActivity.this, HomeActivity.class));
                 } else if (id == R.id.menu_profile) {
-                    Toast.makeText(ClubActivity.this, "Profil seçildi", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ClubActivity.this, ProfileActivity.class);
+                    startActivity(intent);
                 } else if (id == R.id.menu_logout) {
                     Toast.makeText(ClubActivity.this, "Çıkış yapılıyor...", Toast.LENGTH_SHORT).show();
                     finish(); // Çıkış için aktiviteyi kapat

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,16 +23,20 @@ import com.google.firebase.storage.StorageReference;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AddPostActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private EditText editPostContent;
     private ImageView previewPhoto;
+    private ProgressBar progressBar;
     private Uri imageUri;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private StorageReference storageRef;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         editPostContent = findViewById(R.id.editPostContent);
         previewPhoto = findViewById(R.id.previewPhoto);
+        progressBar = findViewById(R.id.progressBar);
         ImageButton btnAddPhoto = findViewById(R.id.btnAddPhoto);
         Button btnSharePost = findViewById(R.id.btnSharePost);
 
@@ -53,15 +59,17 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
         btnSharePost.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+
             String postContent = editPostContent.getText().toString().trim();
             String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
 
             if (userId == null) {
+                progressBar.setVisibility(View.GONE);
                 System.out.println("Kullanıcı oturumu açık değil!");
                 return;
             }
 
-            // Kullanıcı adını Firestore'dan al
             db.collection("users").document(userId).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
@@ -69,52 +77,76 @@ public class AddPostActivity extends AppCompatActivity {
 
                             if (username != null && !username.isEmpty()) {
                                 if (imageUri != null) {
-                                    // Görsel varsa yükle ve post kaydet
                                     uploadImageAndSavePost(username, postContent);
                                 } else {
-                                    // Görsel yoksa sadece post kaydet
                                     savePostToFirestore(username, postContent, null);
                                 }
                             } else {
+                                progressBar.setVisibility(View.GONE);
                                 System.out.println("Kullanıcı adı bulunamadı.");
                             }
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             System.out.println("Kullanıcı dökümanı mevcut değil.");
                         }
                     })
                     .addOnFailureListener(e -> {
+                        progressBar.setVisibility(View.GONE);
                         System.out.println("Firestore sorgusu başarısız oldu: " + e.getMessage());
                     });
         });
     }
 
     private void uploadImageAndSavePost(String username, String content) {
-        String fileName = UUID.randomUUID().toString();
-        StorageReference fileRef = storageRef.child("post_images/" + fileName);
+        executor.execute(() -> {
+            try {
+                String fileName = UUID.randomUUID().toString();
+                StorageReference fileRef = storageRef.child("post_images/" + fileName);
 
-        fileRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
-            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                savePostToFirestore(username, content, uri.toString());
-            }).addOnFailureListener(e -> {
-                System.out.println("Görsel URL'si alınamadı: " + e.getMessage());
-            });
-        }).addOnFailureListener(e -> {
-            System.out.println("Görsel yükleme başarısız: " + e.getMessage());
+                fileRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
+                    fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        savePostToFirestore(username, content, uri.toString());
+                    }).addOnFailureListener(e -> {
+                        runOnUiThread(() -> {
+                            progressBar.setVisibility(View.GONE);
+                            System.out.println("Görsel URL'si alınamadı: " + e.getMessage());
+                        });
+                    });
+                }).addOnFailureListener(e -> {
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        System.out.println("Görsel yükleme başarısız: " + e.getMessage());
+                    });
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    System.out.println("Arka planda bir hata oluştu: " + e.getMessage());
+                });
+            }
         });
     }
 
     private void savePostToFirestore(String username, String content, String imageUrl) {
-        HashMap<String, Object> post = new HashMap<>();
-        post.put("username", username);
-        post.put("content", content);
-        post.put("imageUri", imageUrl);
-        post.put("timestamp", System.currentTimeMillis());
+        executor.execute(() -> {
+            HashMap<String, Object> post = new HashMap<>();
+            post.put("username", username);
+            post.put("content", content);
+            post.put("imageUri", imageUrl);
+            post.put("timestamp", System.currentTimeMillis());
 
-        db.collection("posts").add(post).addOnSuccessListener(documentReference -> {
-            System.out.println("Post başarıyla kaydedildi!");
-            finish();
-        }).addOnFailureListener(e -> {
-            System.out.println("Post kaydedilemedi: " + e.getMessage());
+            db.collection("posts").add(post).addOnSuccessListener(documentReference -> {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    System.out.println("Post başarıyla kaydedildi!");
+                    finish();
+                });
+            }).addOnFailureListener(e -> {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    System.out.println("Post kaydedilemedi: " + e.getMessage());
+                });
+            });
         });
     }
 

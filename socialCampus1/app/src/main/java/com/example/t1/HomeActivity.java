@@ -69,7 +69,8 @@ public class HomeActivity extends AppCompatActivity {
                 if (id == R.id.menu_home) {
                     Toast.makeText(HomeActivity.this, "Anasayfa seçildi", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.menu_profile) {
-                    Toast.makeText(HomeActivity.this, "Profil seçildi", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+                    startActivity(intent);
                 } else if (id == R.id.menu_logout) {
                     Toast.makeText(HomeActivity.this, "Çıkış yapılıyor...", Toast.LENGTH_SHORT).show();
                     finish(); // Çıkış için aktiviteyi kapat

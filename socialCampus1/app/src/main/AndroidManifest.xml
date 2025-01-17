@@ -29,6 +29,7 @@
         <activity android:name=".AddEventActivity"></activity>
         <activity android:name=".ClubActivity"></activity>
         <activity android:name=".AddClubActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
 
 
 

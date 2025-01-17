@@ -67,7 +67,8 @@ public class EventActivity extends AppCompatActivity {
                 startActivity(new Intent(EventActivity.this, HomeActivity.class));
                 finish();
             } else if (id == R.id.menu_profile) {
-                Toast.makeText(EventActivity.this, "Profil seçildi", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(EventActivity.this, ProfileActivity.class);
+                startActivity(intent);
             } else if (id == R.id.menu_logout) {
                 Toast.makeText(EventActivity.this, "Çıkış yapılıyor...", Toast.LENGTH_SHORT).show();
                 finish();
